@@ -1,0 +1,33 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 20px;
+  .brand {
+    font-size: 20px;
+  }
+  .menus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    flex-direction: row;
+  }
+  .profile {
+    Avatar {
+      cursor: pointer;
+      position: relative;
+      height: fit-content;
+    }
+    .button {
+      display: transparent;
+      background-color: #3a77ff;
+      border: none;
+      // display: none;
+    }
+    .dropdown {
+      right: 0px;
+      position: fixed;
+    }
+  }
+}
