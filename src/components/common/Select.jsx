@@ -1,9 +1,14 @@
-import { FormControl, InputLabel, MenuItem } from "@mui/material";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+} from "@mui/material";
+
 import { Select as MuiSelect } from "@mui/material";
-const Select = ({ name, value, onChange, label, options }) => {
-  console.log(value);
+const Select = ({ name, value, onChange, label, options, error = null }) => {
   return (
-    <FormControl variant="outlined">
+    <FormControl variant="outlined" {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
       <MuiSelect name={name} value={value} label={label} onChange={onChange}>
         {options.map((option) => (
@@ -12,6 +17,7 @@ const Select = ({ name, value, onChange, label, options }) => {
           </MenuItem>
         ))}
       </MuiSelect>
+      {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   );
 };

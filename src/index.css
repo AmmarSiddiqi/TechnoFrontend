@@ -1,0 +1,32 @@
+.upload__placeholder {
+    align-items: center;
+    border-radius: 0.25rem;
+    border: 1px solid rgb(24, 24, 24);
+    color: rgb(7, 7, 7);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    max-height: 7rem;
+    max-width: 7rem;
+    min-height: 5rem;
+    min-width: 5rem;
+    padding: 3rem;
+  }
+  
+  .upload__placeholder:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  
+  .upload__content {
+    border-radius: 0.25rem;
+    height: 7rem;
+    margin-bottom: 1rem;
+    object-fit: cover;
+    width: 7rem;
+  }
+  
+  .upload__content:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
