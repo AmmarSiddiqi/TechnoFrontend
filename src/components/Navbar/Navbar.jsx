@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
-import Divider from "@mui/material/Divider";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
@@ -34,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
   dropdown: {},
 }));
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
+  console.log(user);
   const [showDropdown, setShowDropdown] = useState(false);
   const muiClass = useStyles();
 
@@ -43,118 +43,140 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" className={muiClass.root} elevaion={0}>
-      <Toolbar className={classes.toolbar}>
-        <div className={classes.brand}>
-          <Typography
-            className={muiClass.logo}
-            sx={{ fontSize: "18px", fontWeight: "bold" }}
-          >
-            TMP
-          </Typography>
-        </div>
-        <div className={classes.menus}>
-          <NavLink to="/" style={{ textDecoration: "none", color: "white" }}>
-            <Typography className={muiClass.menu}>Home</Typography>
-          </NavLink>
-          <Link
-            to="/messages"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <Typography className={muiClass.menu}>Messages</Typography>
-          </Link>
-          <Link
-            to="/favorites"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <Typography className={muiClass.menu}>Favorites</Typography>
-          </Link>
-          <Typography className={muiClass.menu}>
-            <Link to="/post" style={{ textDecoration: "none", color: "white" }}>
-              Post
-            </Link>
-          </Typography>
-        </div>
-
-        <div className={classes.profile}>
-          <button onClick={handleShowDropdown} className={muiClass.button}>
-            <Avatar
-              className={muiClass.profile}
-              src="https://image.shutterstock.com/image-photo/portrait-young-smiling-woman-260nw-330095525.jpg"
-            ></Avatar>
-          </button>
-
-          {showDropdown && (
-            <div className={muiClass.dropdown}>
-              <Menu
-                className={muiClass.dropdown}
-                open={showDropdown}
-                onClose={handleShowDropdown}
-                onClick={handleShowDropdown}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-                PaperProps={{
-                  elevation: 0,
-                  sx: {
-                    overflow: "hidden",
-                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                    top: 0,
-                    right: 14,
-                    mt: 1.5,
-                    "& .MuiAvatar-root": {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1,
-                    },
-                    "&:before": {
-                      content: '""',
-                      display: "block",
-                      position: "absolute",
-                      top: 0,
-                      right: 14,
-                      width: 10,
-                      height: 10,
-                      bgcolor: "background.paper",
-                      transform: "translateY(-50%) rotate(45deg)",
-                      zIndex: 0,
-                    },
-                  },
-                }}
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+    <>
+      {user && (
+        <AppBar position="static" className={muiClass.root} elevaion={0}>
+          <Toolbar className={classes.toolbar}>
+            <div className={classes.brand}>
+              <Typography
+                className={muiClass.logo}
+                sx={{ fontSize: "18px", fontWeight: "bold" }}
               >
-                <MenuItem>
-                  <ListItemIcon>
-                    <AccountCircleIcon fontSize="small" />
-                  </ListItemIcon>
-                  Profile
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <BeenhereIcon fontSize="small" />
-                  </ListItemIcon>
-                  My Ads
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <CancelIcon fontSize="small" />
-                  </ListItemIcon>
-                  Close
-                </MenuItem>
-              </Menu>
+                TMP
+              </Typography>
             </div>
-          )}
-        </div>
-      </Toolbar>
-    </AppBar>
+            <div className={classes.menus}>
+              <NavLink
+                to="/"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Typography className={muiClass.menu}>Home</Typography>
+              </NavLink>
+              <Link
+                to="/messages"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Typography className={muiClass.menu}>Messages</Typography>
+              </Link>
+              <Link
+                to="/favorites"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                <Typography className={muiClass.menu}>Favorites</Typography>
+              </Link>
+              <Typography className={muiClass.menu}>
+                <Link
+                  to="/post"
+                  style={{ textDecoration: "none", color: "white" }}
+                >
+                  Post
+                </Link>
+              </Typography>
+            </div>
+
+            <div className={classes.profile}>
+              <button onClick={handleShowDropdown} className={muiClass.button}>
+                <Avatar className={muiClass.profile} src={user?.image}></Avatar>
+              </button>
+
+              {showDropdown && (
+                <div className={muiClass.dropdown}>
+                  <Menu
+                    className={muiClass.dropdown}
+                    open={showDropdown}
+                    onClose={handleShowDropdown}
+                    onClick={handleShowDropdown}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        overflow: "hidden",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        top: 0,
+                        right: 14,
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                          width: 32,
+                          height: 32,
+                          ml: -0.5,
+                          mr: 1,
+                        },
+                        "&:before": {
+                          content: '""',
+                          display: "block",
+                          position: "absolute",
+                          top: 0,
+                          right: 14,
+                          width: 10,
+                          height: 10,
+                          bgcolor: "background.paper",
+                          transform: "translateY(-50%) rotate(45deg)",
+                          zIndex: 0,
+                        },
+                      },
+                    }}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                  >
+                    <MenuItem>
+                      <ListItemIcon>
+                        <AccountCircleIcon fontSize="small" />
+                      </ListItemIcon>
+                      <Link
+                        to="/profile"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        Profile
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <BeenhereIcon fontSize="small" />
+                      </ListItemIcon>
+                      <Link
+                        to="/myAds"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        My Ads
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      <Link
+                        to="/logout"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        Logout
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <CancelIcon fontSize="small" />
+                      </ListItemIcon>
+                      Close
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
+            </div>
+          </Toolbar>
+        </AppBar>
+      )}
+    </>
   );
 };
 

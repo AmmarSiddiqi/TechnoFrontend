@@ -1,5 +1,7 @@
-import React, { Fragment, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
+import jwtDecode from "jwt-decode";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -12,6 +14,10 @@ import Product from "./components/Products/Product";
 import Favourites from "./components/Products/Favorites";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import AddProduct from "./components/Products/AddProduct";
+import VerifyEmail from "./components/User/VerifyEmail";
+import MyAds from "../src/components/Products/MyAds";
+import Login2 from "./components/User/Login2";
+import Logout from "./components/User/Logout";
 
 const lightTheme = createTheme({
   palette: {
@@ -47,11 +53,22 @@ function App() {
       : setTheme(lightTheme);
   };
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const jwt = localStorage.getItem("jwt");
+      const user = jwtDecode(jwt);
+      setUser(user);
+    } catch (ex) {}
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
+        <Toaster />
         <CssBaseline /> {/* Add basic stying to all the components*/}
-        <Navbar />
+        <Navbar user={user} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
@@ -59,8 +76,11 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/product" element={<Product />} />
           <Route path="/post" element={<AddProduct />} />
+          <Route path="/myAds" element={<MyAds />} />
           <Route path="/favorites" element={<Favourites />} />
           <Route path="/messages" element={<Message />} />
+          <Route path="/verifyEmail" element={<VerifyEmail />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>

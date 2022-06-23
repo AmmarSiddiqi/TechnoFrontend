@@ -7,6 +7,7 @@ import {
   Select as MuiSelect,
 } from "@mui/material";
 import Button from "../common/Button";
+import { getCities, getCategories } from "../../services/httpRequests";
 import Joi from "joi-browser";
 import Select from "../common/Select";
 import { useState, useEffect, useRef } from "react";
@@ -16,10 +17,10 @@ import http from "../../services/httpService";
 import MenuItem from "@mui/material/MenuItem";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { useForm } from "./useForm";
+import { useForm } from "../common/useForm";
 
-const cloudinary_url = "https://api.cloudinary.com/v1_1/dnf7w0ph1/upload";
-const cloudinary_preset = "ml_default";
+const cloudinary_url = process.env.REACT_APP_CLOUDINARY_URL;
+const cloudinary_preset = process.env.REACT_APP_CLOUDINARY_PRESET;
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -67,21 +68,40 @@ const AddProduct = () => {
   const [images, setImages] = useState(null);
   const [imageData, setImageData] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [city, setCity] = useState("");
   const [cities, setCities] = useState([]);
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubcategory] = useState("");
   const [enableSubcategory, setEnableSubcategory] = useState(false);
   const [subCategories, setSubcategories] = useState([]);
-  const [enableUploadButton, setEnableUploadButton] = useState(false);
+  const [enableUploadButton, setEnableUploadButton] = useState(true);
   const imagePickerRef = useRef();
   const classes = useStyles();
 
+  useEffect(() => {
+    populateCities();
+    populateCategories();
+    return () => console.log("Unmounted. Function Cleanup.");
+  }, []);
+
+  useEffect(() => {
+    setValues(values);
+  }, [values]);
+
+  const populateCities = async () => {
+    const cities = await getCities();
+    setCities(cities);
+  };
+  const populateCategories = async () => {
+    const categories = await getCategories();
+    console.log(categories);
+    setCategories(categories);
+  };
+
   const schema = {
     image: Joi.string(),
-    title: Joi.string().required().label("Title"),
-    description: Joi.string().required().label("Description"),
+    title: Joi.string().min(3).max(256).required().label("Title"),
+    description: Joi.string().min(6).max(999).required().label("Description"),
     price: Joi.number().required().min(0).label("Price"),
     location: Joi.string().required().label("Location"),
     category: Joi.string().required().label("Category"),
@@ -98,7 +118,7 @@ const AddProduct = () => {
       errors[error.path] = error.message;
     });
     setErrors(errors);
-    setEnableUploadButton(Object.values(errors).every((item) => item));
+    // setEnableUploadButton(Object.values(errors).every((item) => item));
   };
 
   function validateProperty(name, value) {
@@ -108,55 +128,7 @@ const AddProduct = () => {
     if (error) return error.details[0].message || null;
   }
 
-  // function validate(feildValues = values) {
-  //   console.log(feildValues);
-  //   let temp = { ...errors };
-  //   if ("title" in feildValues)
-  //     temp.title = feildValues.title ? "" : "Invalid Name";
-  //   if ("description" in feildValues)
-  //     temp.description = feildValues.description ? "" : "Invalid Description";
-  //   if ("price" in feildValues)
-  //     temp.price = feildValues.price ? "" : "Invalid Price";
-  //   if ("category" in feildValues)
-  //     temp.category = feildValues.category ? "" : "Please select a category";
-  //   if ("subcategory" in feildValues)
-  //     temp.subCategory = feildValues.subCategory
-  //       ? ""
-  //       : "Please select a subcategory";
-  //   if ("location" in feildValues)
-  //     temp.location = feildValues.location ? "" : "Please Select Your City";
-  //   if ("image" in feildValues)
-  //     temp.image = feildValues.image ? "" : "Please select and Image";
-  //   setErrors({ ...temp });
-  //   if (feildValues === values)
-  //     return Object.values(temp).every((x) => x == "");
-  // }
-
-  useEffect(() => {
-    getCities();
-    getCategories();
-    return () => console.log("Unmounted. Function Cleanup.");
-  }, []);
-
-  useEffect(() => {
-    setValues((values) => values);
-  }, [values]);
-
-  // const handleImageChange = (event) => {
-  //   setImages(event.target.file[0]);
-  // };
-
-  // const uploadImage = async (event) => {
-  //   event.preventDefault();
-  //   const file = images;
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   formData.append("upload", cloudinary_preset);
-  //   const data = await http.post(cloudinary_url);
-  //   console.log(data);
-  // };
-
-  const uploadImage = async (event) => {
+  const uploadImage = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
     setImageData(file);
@@ -177,16 +149,6 @@ const AddProduct = () => {
     setValues(data);
   };
 
-  const getCities = async () => {
-    const { data } = await http.get("http://localhost:4000/api/location");
-    setCities(data);
-  };
-
-  const getCategories = async () => {
-    const { data } = await http.get("http://localhost:4000/api/category");
-    setCategories(data);
-  };
-
   async function uploadImageToCloudinary() {
     const formData = new FormData();
     formData.append("file", imageData);
@@ -203,12 +165,6 @@ const AddProduct = () => {
     uploadImageToCloudinary();
     validate();
     doSubmit();
-
-    // here we set the image's url to current state.image
-    //then we can save this url to the backend or do other stuff
-    // const data = await http.post(cloudinary_url, formData);
-    // console.log(data);
-    return null;
   };
 
   const doSubmit = async () => {
@@ -219,35 +175,12 @@ const AddProduct = () => {
     console.log(res);
   };
 
-  // const handleCityChange = (event) => {
-  //   const data = values;
-  //   data[event.target.name] = event.target.value;
-  //   setValues(data);
-  // };
-
-  // const handleCategoryChange = (event) => {
-  //   const data = values;
-  //   data[event.target.name] = event.target.value;
-  //
-  //   setValues(data);
-  // };
-
-  // const handleSubcategoryChange = (event) => {
-  //   const data = values;
-  //   data[event.target.name] = event.target.value;
-  //   setValues(data);
-  // };
-
   function handleFormReset() {
     setValues(initialFormValue);
     setImages(null);
     setErrors({});
     setImageUrl("");
   }
-
-  // const setSelectedCity = (cityName) => {
-  // setCity(cityName);
-  // };
 
   const setSelectedSubcategory = (subCategory) => {
     setSubcategory(subCategory);
@@ -261,8 +194,6 @@ const AddProduct = () => {
     setEnableSubcategory(true);
     setCategory(category);
   };
-
-  const handleChange = (event) => {};
 
   const textfeild = (
     value,
@@ -313,9 +244,7 @@ const AddProduct = () => {
                   src={images}
                   alt="img"
                   onClick={() => imagePickerRef.current.click()}
-                  // onClick={handleImageChange}
                 />
-                {/* <button onClick={uploadImage}>Upload</button> */}
               </div>
             )}
             <input
@@ -353,8 +282,6 @@ const AddProduct = () => {
             errors.price,
             false
           )}
-          {/* </Grid> */}
-          {/* <Grid item xs={6}> */}
           <Select
             name="location"
             value={values.location}
@@ -369,13 +296,12 @@ const AddProduct = () => {
           >
             <InputLabel>Category</InputLabel>
             <MuiSelect
-              // className={classes.selectItems}
               value={values.category}
               label="Category"
               name="category"
               onChange={handleInputChange}
             >
-              {categories.map((category) => (
+              {categories?.map((category) => (
                 <MenuItem
                   onClick={() => setSelectedCategory(category.name)}
                   value={category._id}
@@ -402,7 +328,7 @@ const AddProduct = () => {
               label="Select Subcategory"
               disabled={!enableSubcategory}
             >
-              {subCategories.map((subCategory) => (
+              {subCategories?.map((subCategory) => (
                 <MenuItem
                   onClick={() => setSelectedSubcategory(subCategory)}
                   value={subCategory}
@@ -418,7 +344,7 @@ const AddProduct = () => {
           </FormControl>
           {/* </Grid> */}
           <Grid container>
-            <Button text="Post" type="submit" disabled={!enableUploadButton} />
+            <Button text="Post" type="submit" disabled={enableUploadButton} />
             <Button
               text="Reset"
               color="error"

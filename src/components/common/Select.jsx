@@ -11,7 +11,7 @@ const Select = ({ name, value, onChange, label, options, error = null }) => {
     <FormControl variant="outlined" {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
       <MuiSelect name={name} value={value} label={label} onChange={onChange}>
-        {options.map((option) => (
+        {options?.map((option) => (
           <MenuItem value={option._id} key={option._id}>
             {option.name}
           </MenuItem>
