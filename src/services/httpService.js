@@ -1,4 +1,7 @@
 import axios from "axios";
+import { getJwt } from "./auth";
+
+// axios.defaults.headers.common["x-auth-token"] = getJwt();
 
 axios.interceptors.response.use(null, (error) => {
   const expectedError =

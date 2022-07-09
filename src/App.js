@@ -16,8 +16,9 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import AddProduct from "./components/Products/AddProduct";
 import VerifyEmail from "./components/User/VerifyEmail";
 import MyAds from "../src/components/Products/MyAds";
-import Login2 from "./components/User/Login2";
 import Logout from "./components/User/Logout";
+import Products from "./components/Products/Products";
+import UpdateProfile from "./components/Profile/UpdateProfile";
 
 const lightTheme = createTheme({
   palette: {
@@ -53,7 +54,7 @@ function App() {
       : setTheme(lightTheme);
   };
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     try {
@@ -71,10 +72,14 @@ function App() {
         <Navbar user={user} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile user={user} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/product" element={<Product />} />
+          <Route path="/products" element={<Products />} />
+          <Route
+            path="/updateProfile"
+            element={<UpdateProfile user={user} />}
+          />
           <Route path="/post" element={<AddProduct />} />
           <Route path="/myAds" element={<MyAds />} />
           <Route path="/favorites" element={<Favourites />} />

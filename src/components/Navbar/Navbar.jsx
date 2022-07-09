@@ -34,9 +34,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = ({ user }) => {
-  console.log(user);
   const [showDropdown, setShowDropdown] = useState(false);
   const muiClass = useStyles();
+
+  if (Object.keys(user).length === 0) user = null;
 
   const handleShowDropdown = () => {
     setShowDropdown((prevState) => !prevState);
